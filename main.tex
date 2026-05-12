@@ -1,0 +1,126 @@
+\documentclass[12pt]{article}
+
+% --- Formatting per candidacy requirements -------------------------------
+% Proposition limit: 15 double-spaced pages, excluding front matter
+% and references.
+% This is the IN-FIELD proposition.
+% -------------------------------------------------------------------------
+
+
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{setspace}
+\doublespacing
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+\usepackage[
+  backend=biber,
+  style=numeric-comp,
+  sorting=none,
+  giveninits=true,
+  maxbibnames=10
+]{biblatex}
+\addbibresource{references.bib}
+
+\graphicspath{{figures/}}
+
+\title{Proposition 1 (In-Field) \\[0.25em]
+       \large Tensor-Network Time Evolution for Spin Dynamics in
+       Quantum Chemistry}
+\author{Xiangzhi (Sam) Ouyang}
+\date{\today}
+
+\begin{document}
+
+% --- Front matter (excluded from page count) -----------------------------
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\Large \bfseries Candidacy Proposition 1\par}
+  \vspace{0.5cm}
+  {\large \textit{In-field}\par}
+  \vspace{1.5cm}
+  {\LARGE Tensor-Network Time Evolution for Spin Dynamics
+          in Quantum Chemistry\par}
+  \vspace{2cm}
+  {\large Xiao-Yu Ouyang \par}
+  \vspace{0.5cm}
+  {\normalsize \texttt{xouyang@caltech.edu} \par}
+  \vspace{1.5cm}
+  {\normalsize Division of Chemistry and Chemical Engineering \\
+               California Institute of Technology \par}
+  \vfill
+  {\normalsize Submitted \today \par}
+\end{titlepage}
+
+\begin{singlespace}
+\tableofcontents
+\end{singlespace}
+\newpage
+
+\begin{abstract}
+\noindent
+\textit{[One paragraph: central claim, target system, method,
+expected result, why it is original to me and not a next-step
+extension of group work.]}
+\end{abstract}
+
+% --- Body (counts toward the 15-page limit) ------------------------------
+\setcounter{page}{1}
+
+
+\section{Central Claim}
+Use tree graph tensor network and belief propagation to simulate the large scale spin dynamics in quantum chemistry.
+
+\section{Background and Motivation}
+
+Spin dynamics in quantum chemistry is an important topic to research on, because... 
+
+Here we can list some examples of the interesting spin dynamics in real world. For example \cite{andrewsDFTassistedNaturalAbundance2026}. 
+
+We can classify the types of spin dynamics as this:
+
+In experiment, how do people research on spin dynamics? What is the limit of current protocals?
+
+Then how can numerical method help on this? 
+
+What is the numerical tool people use? Like ED? Time dependent DMRG? Semi classical method? Hartree Fock? TEBD or TDVP? What is the best region they could be used?
+
+We will focus on the tensor network methods to simulate the time evolution.
+
+First, we need to find a proper tensor network representing the quantum state. Most time it's 1D MPS, but using tree tensor network state \cite{nakataniEfficientTreeTensor2013} or arbitrary loopy graph tensor network state is also used. 
+What is the difference? Tree tensor network better on what part?
+
+There have been multiple methods simulating the time evolution of the tree tensor network states \cite{Shi2006Classical}.  What is its problem?
+
+On applying the tree (or more graph) tensor network methods into quantum chemistry, there has also been some work. They do research on systems like xxx. 
+
+Here we can introduce the belief propagation method into it. For introduction of BP see research summary. (Can also copy or generate a short summary from it).
+BP works well for 1D and tree case, so we hope to apply it into the real spin dynamics case.
+
+
+
+
+
+
+
+
+
+
+% --- References (excluded from page count) -------------------------------
+\begin{singlespace}
+\printbibliography
+\end{singlespace}
+
+\end{document}

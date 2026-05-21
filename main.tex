@@ -121,8 +121,9 @@ Their cost grows as $\prod_i(2I_i+1)$, which becomes $2^N$ for $N$ spin-$1/2$ pa
 Magnetic-resonance experiments often require mixed-state observables, so practical simulations frequently propagate the density matrix or product-operator expansion in Liouville space, where the dimension scales as the square of the Hilbert-space dimension.
 Spinach is one practical implementation of this Liouville-space viewpoint, combining density-matrix propagation with sparse algebra and magnetic-resonance-specific state-space restrictions \cite{Hogben2011Spinach}.
 For example, Andrews \textit{et al.} used quantum-chemical $J$ couplings to predict ZF NMR spectra by propagating the density matrix in time with Spinach to generate free-induction decays, and by diagonalizing the same ZF Hamiltonian in the frequency domain to obtain transition frequencies and amplitudes \cite{andrewsDFTassistedNaturalAbundance2026}.
-Semiclassical, cluster, and restricted-state-space methods can reach larger spin systems by discarding weak many-spin correlations or using problem-specific physical approximations.
-These methods are indispensable references, but they either remain exponentially limited or rely on truncations that are not designed to exploit the molecular coupling graph as a tensor-network geometry.
+Restricted-state-space, cluster, and semiclassical methods can reach larger spin systems by discarding weak many-spin correlations or using problem-specific physical approximations \cite{Kuprov2011PolynomialStateSpace,Yang2008ClusterCorrelation,Lindoy2014ImprovedSemiclassical}.
+These methods are indispensable references, but their scalable versions rely on truncation assumptions whose accuracy must be checked case by case, especially when dense molecular coupling networks generate many comparable coherences.
+This motivates complementary tensor-network approaches, where the approximation is controlled by bond dimension and by the chosen network topology.
 
 We will therefore focus on tensor-network methods to simulate the time evolution.
 Within tensor-network approaches, one first needs to choose a network geometry for representing the quantum state. Most time it's 1D MPS, but using tree tensor network state \cite{nakataniEfficientTreeTensor2013} or arbitrary loopy graph tensor network state is also used. 

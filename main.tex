@@ -119,7 +119,8 @@ The most direct approaches to molecular spin dynamics propagate the spin system 
 Hilbert-space methods, including exact diagonalization, Krylov or Lanczos propagation, and Chebyshev expansions, apply directly to arbitrary coupling graphs and provide controlled benchmarks for small spin networks.
 Their cost grows as $\prod_i(2I_i+1)$, which becomes $2^N$ for $N$ spin-$1/2$ particles, so they cannot serve as a general large-system method.
 Magnetic-resonance experiments often require mixed-state observables, so practical simulations frequently propagate the density matrix or product-operator expansion in Liouville space, where the dimension scales as the square of the Hilbert-space dimension.
-Recent DFT-assisted ZF NMR simulations follow this pattern: quantum-chemical $J$ couplings are converted into spectra by time-domain Spinach density-matrix simulations and by frequency-domain calculations in the Hamiltonian eigenbasis \cite{Hogben2011Spinach,andrewsDFTassistedNaturalAbundance2026}.
+Spinach is one practical implementation of this Liouville-space viewpoint, combining density-matrix propagation with sparse algebra and magnetic-resonance-specific state-space restrictions \cite{Hogben2011Spinach}.
+For example, Andrews \textit{et al.} used quantum-chemical $J$ couplings to predict ZF NMR spectra by propagating the density matrix in time with Spinach to generate free-induction decays, and by diagonalizing the same ZF Hamiltonian in the frequency domain to obtain transition frequencies and amplitudes \cite{andrewsDFTassistedNaturalAbundance2026}.
 Semiclassical, cluster, and restricted-state-space methods can reach larger spin systems by discarding weak many-spin correlations or using problem-specific physical approximations.
 These methods are indispensable references, but they either remain exponentially limited or rely on truncations that are not designed to exploit the molecular coupling graph as a tensor-network geometry.
 

@@ -90,19 +90,19 @@ Spin-dynamics simulation then converts these parameters into experimentally meas
 
 In this proposal, the concrete motivating example is zero-field nuclear magnetic resonance (ZF NMR), where the measured spectrum is generated primarily by coherent nuclear-spin evolution under scalar $J$ couplings.
 For a liquid-state molecule in the absence of a strong magnetic field, the leading spin Hamiltonian is
-\[
+\begin{equation}
 H_{\rm ZF}=2\pi\sum_{i<j}J_{ij}\mathbf I_i\cdot\mathbf I_j+\sum_i \gamma_i \mathbf B_{\rm res}\cdot\mathbf I_i+H_{\rm small},
-\]
+\end{equation}
 where $J_{ij}$ are through-bond scalar couplings, $\mathbf B_{\rm res}$ denotes residual magnetic fields, and $H_{\rm small}$ may include weak residual dipolar, quadrupolar, or instrumental perturbations.
 The initial state is usually not a pure state, but a high-temperature mixed state prepared by prepolarization in a magnetic field,
-\[
+\begin{equation}
 \rho_0\simeq \frac{\mathbf 1}{d}+\epsilon\sum_i\gamma_i I_i^z,
-\]
+\end{equation}
 which is then allowed to evolve after transfer to near-zero field.
 The measured free-induction signal is a time-dependent magnetization, for example
-\[
+\begin{equation}
 M_\alpha(t)=\mathrm{Tr}\!\left[\rho(t)\sum_i\gamma_i I_i^\alpha\right],
-\]
+\end{equation}
 and its Fourier transform gives a molecular fingerprint spectrum determined by the $J$-coupling network \cite{Theis2013ChemicalAnalysis,andrewsDFTassistedNaturalAbundance2026}.
 Typical scalar couplings in small organic molecules range from a few hertz to hundreds of hertz, so chemically relevant ZF NMR spectra usually lie in the hertz-to-kilohertz range and require coherent evolution over milliseconds to seconds.
 This makes ZF NMR a natural target for testing tensor-network spin dynamics: the Hamiltonian is molecular, graph-structured, and approximately isolated on the coherent time scale, while the observable is directly a finite-time response signal.

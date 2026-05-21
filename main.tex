@@ -114,13 +114,17 @@ Numerical spin dynamics therefore provides the missing bridge: starting from qua
 
 
 \section{Existing Numerical Methods}
-Then how can numerical method help on this? 
 
-What is the numerical tool people use? Like ED? Time dependent DMRG? Semi classical method? Hartree Fock? TEBD or TDVP? What is the best region they could be used?
+The most direct approaches to molecular spin dynamics propagate the spin system in either Hilbert space or Liouville space.
+Hilbert-space methods, including exact diagonalization, Krylov or Lanczos propagation, and Chebyshev expansions, apply directly to arbitrary coupling graphs and provide controlled benchmarks for small spin networks.
+Their cost grows as $\prod_i(2I_i+1)$, which becomes $2^N$ for $N$ spin-$1/2$ particles, so they cannot serve as a general large-system method.
+Magnetic-resonance experiments often require mixed-state observables, so practical simulations frequently propagate the density matrix or product-operator expansion in Liouville space, where the dimension scales as the square of the Hilbert-space dimension.
+Recent DFT-assisted ZF NMR simulations follow this pattern: quantum-chemical $J$ couplings are converted into spectra by time-domain Spinach density-matrix simulations and by frequency-domain calculations in the Hamiltonian eigenbasis \cite{Hogben2011Spinach,andrewsDFTassistedNaturalAbundance2026}.
+Semiclassical, cluster, and restricted-state-space methods can reach larger spin systems by discarding weak many-spin correlations or using problem-specific physical approximations.
+These methods are indispensable references, but they either remain exponentially limited or rely on truncations that are not designed to exploit the molecular coupling graph as a tensor-network geometry.
 
-We will focus on the tensor network methods to simulate the time evolution.
-
-First, we need to find a proper tensor network representing the quantum state. Most time it's 1D MPS, but using tree tensor network state \cite{nakataniEfficientTreeTensor2013} or arbitrary loopy graph tensor network state is also used. 
+We will therefore focus on tensor-network methods to simulate the time evolution.
+Within tensor-network approaches, one first needs to choose a network geometry for representing the quantum state. Most time it's 1D MPS, but using tree tensor network state \cite{nakataniEfficientTreeTensor2013} or arbitrary loopy graph tensor network state is also used. 
 What is the difference? Tree tensor network better on what part?
 
 There have been multiple methods simulating the time evolution of the tree tensor network states \cite{Shi2006Classical}.  What is its problem?

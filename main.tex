@@ -121,9 +121,85 @@ There have been multiple methods simulating the time evolution of the tree tenso
 
 On applying the tree (or more graph) tensor network methods into quantum chemistry, there has also been some work. They do research on systems like xxx. 
 
-\section{Graph-Adapted Tensor Network Belief Propagation Method}
+\section{Tree Graph Tensor Network Belief Propagation Method}
 Here we can introduce the belief propagation method into it. For introduction of BP see research summary. (Can also copy or generate a short summary from it).
 BP works well for 1D and tree case, so we hope to apply it into the real spin dynamics case.
+
+We can copy from the research summary to show how BP and BP RTM works on the finite tree.
+
+However we need to do more.
+
+The first is the use of DIIS to help current RTM to converge.
+
+The second, what is the difference of molecular spin's Hamiltonian with the TFIM Hamiltonian on a finite tree?
+
+One might be in the interaction not Ising like.
+Another most important difference is the topology, actually not a tree.
+
+So how do we choose the best tree graph becomes a problem.
+
+How do we choose the tree for ground state problem? What is the principle?
+
+Guess 1: Interaction strength. Be specific on the algorithm.
+
+Guess 2: We have several candidates of tree tensor network state. We will evaluate the entanglement on every bond. Write some formula here. We may aim at 1) lower the maximum entanglement entropy 2) lower the average entanglement entropy. Is there an optimal choice?
+
+Is Guess 1 and 2 giving similar results? Need to check literature.
+
+
+OK, now given these information upon, how do we choose the tree for time evolution problem?
+
+One thing we still didn't do is, is there any people try to use tree tensor network to simulate dynamics in quantum chemistry? No need to be BP method, can just be simple update. 
+If yes, find references; If no, given the current situation of research, can we find the reason explained in references? Or summarize by ourself.
+
+Anyway, here the difference is the new Hamiltonian geometry. Not uniform interaction.
+
+(What kind of molecule it could be? Some examples? Protein?)
+
+Then, we need to find, or approximate the problem of doing this simple update of tree, to see what advantage we might have for doing BP on this.
+
+What is the advantage for BP in regular trees of TFIM, or other models, not have to be in quantum chemistry, molecules?
+
+Does the advantage still exist? How to test them?
+
+For validation, or initial steps of doing this research, maybe worth checking:
+
+Different selection of tree graph, temporal entanglement entropy still behaves the same as ground state does? Or not?
+
+
+(Mixed state as input also need to be considered. )
+
+
+
+
+
+(The specific thing to check is scaling. 
+
+This is the most potential advantage of BP. 
+In large size/long time.
+
+But we are pretty not sure on this. We should have:
+
+The approximation of scaling of 1D for this molecular Hamiltonian. 
+Total time, or bond dimension's scaling with simulation time and system size?
+And then scaling of tree? using simple update, and BP.
+
+Or maybe, the scaling might not show the advantage of tree. 
+
+But the accuracy, or the better entanglement structure.)
+
+Another thing that BP might have advantage is, we can use the lightcone structure.
+
+We all know that lightcone structure need the space scale to be much large than the time scale. Does the system we care about have this property? Evaluate this.
+
+If yes, let's evaluate the benefit we could have from the lightcone.
+
+
+
+
+
+
+
 
 \section{Discussion}
 

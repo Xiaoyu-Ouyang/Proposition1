@@ -187,9 +187,23 @@ On a tree, BP does not introduce an additional loop approximation, so the main n
 The observed RTM improvement supports the principle that a message should be compressed according to the contraction in which it will be used, rather than according to its standalone norm.
 The proposed work will test whether this advantage survives for quantum-chemistry-derived molecular spin Hamiltonians, where the interactions are generally anisotropic, nonuniform, and defined on coupling graphs that are not exactly trees.
 
-However we need to do more.
+The first concrete algorithmic task is to stabilize and accelerate the RTM message fixed-point iteration.
+For compression schemes that treat each outgoing message independently, such as ordinary density-matrix compression, fitting-based compression, direct compression, SRC, or zip-up compression, tree message propagation is usually a single directional contraction with no nonlinear environment-consistency problem.
+RTM is more accurate because it chooses the message subspace using the reverse message as an environment, but this also makes the message equations mutually dependent and can require repeated sweeps.
+Direct inversion in the iterative subspace (DIIS) is a natural way to stabilize such fixed-point iterations by extrapolating from previous message residuals \cite{pulayConvergenceAccelerationIterative1980,pulayImprovedSCFConvergence1982}.
 
-The first is the use of DIIS to help current RTM to converge.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{bpTmSequentialDiis.png}
+    \caption{Preliminary DIIS test for the same depth-4 binary-tree transverse-field Ising benchmark as Fig.~\ref{fig:treeFiniteAmplitude}, measured at a fixed final time.
+    Sequential BP-TM updates without DIIS show visible oscillations before reaching the fixed-point amplitude, while DIIS stabilizes the approach to the same converged value.
+    Damping also stabilizes the iteration but approaches the plateau more slowly, and the manually swept RTM update provides a reference for the sweep-based implementation.}
+    \label{fig:bpTmSequentialDiis}
+\end{figure}
+
+Figure~\ref{fig:bpTmSequentialDiis} suggests that DIIS is useful primarily as a stabilization tool for environment-dependent RTM updates, rather than as a black-box guarantee of faster convergence in every case.
+For molecular spin graphs, the tree will generally be irregular rather than a perfect binary tree, and local observables need not require globally converging every message with equal effort.
+A practical implementation should therefore combine DIIS with asynchronous or importance-weighted message updates, focusing computational effort on branches whose RTM residuals remain large or whose messages have the strongest influence on the target local observable.
 
 The second, what is the difference of molecular spin's Hamiltonian with the TFIM Hamiltonian on a finite tree?
 

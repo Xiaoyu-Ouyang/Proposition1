@@ -92,10 +92,8 @@ These effective spin Hamiltonians can be grouped by the origin and connectivity 
 The first class consists of nuclear-spin networks, where scalar and dipolar couplings redistribute nuclear spin order and generate nuclear magnetic resonance (NMR) signals, spin diffusion, or multiple-quantum coherences \cite{Hogben2011Spinach}.
 The second class consists of electron-nuclear central-spin networks, where one or a few unpaired electron spins couple through hyperfine interactions to many nuclear spins, as in molecular spin qubits and radical pairs \cite{Chen2020DecoherenceMolecularQubits,Antill2024RadicalPy}.
 The third class consists of exchange-coupled electronic spin clusters, such as molecular magnets and coupled molecular spin qubits, where exchange, anisotropy, and Zeeman terms define magnetic excitations and coherent control dynamics \cite{Coronado2020MolecularMagnetism}.
-The target of this proposal is not full-protein coherent spin dynamics, but localized molecular spin subnetworks for which coherent effective Hamiltonian dynamics is meaningful over the measured time window.
-We use nuclear-spin networks as the primary concrete setting, with the other two classes motivating broader graph-structured molecular spin dynamics.
 
-In this proposal, the concrete motivating example is zero-field nuclear magnetic resonance (ZF NMR), where the measured spectrum is generated primarily by coherent nuclear-spin evolution under scalar $J$ couplings.
+A concrete motivating example is zero-field nuclear magnetic resonance (ZF NMR), where the measured spectrum is generated primarily by coherent nuclear-spin evolution under scalar $J$ couplings.
 For a liquid-state molecule in the absence of a strong magnetic field, the leading spin Hamiltonian is
 \begin{equation}
 H_{\rm ZF}=2\pi\sum_{i<j}J_{ij}\mathbf I_i\cdot\mathbf I_j+\sum_i \gamma_i \mathbf B_{\rm res}\cdot\mathbf I_i+H_{\rm small},
@@ -157,7 +155,7 @@ For tree graphical models and tree tensor networks, BP gives an exact contractio
 Recent influence-functional BP methods use this idea for quantum dynamics by representing each directed spatial message as a temporal tensor network that summarizes the dynamical influence of one branch on the rest of the system \cite{Park2025IFBP}.
 This is closely related to earlier tree tensor network dynamics and time-dependent variational principles on loop-free tensor networks \cite{Shi2006Classical,Bauernfeind2020TDVPTTNS}.
 
-\subsection{Aim 1: Benchmark IF-BP against TTNS time evolution on finite trees}
+\subsection{Aim 1: Benchmark between IF-BP and TTNS time evolution on finite trees}
 
 In a Trotterized spacetime tensor network on a finite tree, each spin site contributes a local temporal tensor or temporal matrix product operator \(T_i\), and each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\).
 This message represents the whole branch attached to \(i\) after cutting the edge \((i,j)\).
@@ -247,7 +245,7 @@ Figure~\ref{fig:bpTmSequentialDiis} suggests that DIIS is useful primarily as a 
 For molecular spin graphs, the tree will generally be irregular rather than a perfect binary tree, and local observables need not require globally converging every message with equal effort.
 A practical implementation should therefore combine DIIS with asynchronous or importance-weighted message updates, focusing computational effort on branches whose RTM residuals remain large or whose messages have the strongest influence on the target local observable.
 
-\subsection{Aim 2: Construct molecular tree topologies}
+\subsection{Aim 2: Construct optimal molecular tree topologies}
 
 The second concrete task is to choose tree geometries for molecular spin Hamiltonians and validate whether those geometries improve the finite-time dynamics.
 This problem does not arise in the binary-tree TFIM benchmark, where the Hamiltonian graph is already the same tree used by the tensor network.
@@ -340,11 +338,6 @@ The observables will include local magnetization, free-induction decay, Fourier-
 The diagnostics will again compare TTNS tree-edge entropy, IF-BP temporal-message entropy, message discarded weight, runtime, and the bond dimension needed to reach a fixed observable tolerance.
 A central validation is how these quantities scale with simulation time, system size, off-tree coupling strength \(\lambda\), and off-tree coupling density.
 A key validation question is whether tree choices that look good by Hamiltonian weights or static correlation measures also reduce temporal-message entropy during real-time dynamics.
-For the high-temperature ZF NMR initial state, the initial density operator is expected to have low TTNS or TTNO bond dimension, so the main bottleneck should come from real-time growth of state or message complexity.
-Mixed-state initial-state complexity should be treated separately only when studying genuinely thermal or ground-state initial states.
-Because the target observables are local or low-dimensional response functions, we will also test whether IF-BP can exploit an effective light cone by updating only messages within a chosen radius or above an importance threshold.
-This light-cone test will be treated as a possible efficiency gain for local observables, not as an assumed property of all molecular spin dynamics.
-If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, failure of the selected tree topology, or absence of a useful local-observable light cone.
 
 \section{Discussion}
 

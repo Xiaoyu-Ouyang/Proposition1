@@ -145,10 +145,47 @@ This gap motivates the central question of our proposal, that whether a tensor-n
 
 \section{Tree Graph Tensor Network Belief Propagation Method}
 
-Here we can introduce the belief propagation method into it. For introduction of BP see research summary. (Can also copy or generate a short summary from it).
-BP works well for 1D and tree case, so we hope to apply it into the real spin dynamics case.
+Belief propagation provides a natural contraction language for tensor networks whose spatial connectivity is a tree.
+For tree graphical models and tree tensor networks, BP gives an exact contraction structure; it becomes an approximation only when the graph contains loops or when the messages themselves are compressed \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}.
+Recent influence-functional BP methods use this idea for quantum dynamics by representing each directed spatial message as a temporal tensor network that summarizes the dynamical influence of one branch on the rest of the system \cite{Park2025IFBP}.
+This is closely related to earlier tree tensor network dynamics and time-dependent variational principles on loop-free tensor networks \cite{Shi2006Classical,Bauernfeind2020TDVPTTNS}.
 
-We can copy from the research summary to show how BP and BP RTM works on the finite tree.
+In a Trotterized spacetime tensor network on a finite tree, each spin site contributes a local temporal tensor or temporal matrix product operator \(T_i\), and each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\).
+This message represents the whole branch attached to \(i\) after cutting the edge \((i,j)\).
+The ordinary density-matrix message update contracts the local tensor with all incoming messages except the one from the target direction,
+\begin{equation}
+m_{i\to j}\simeq
+\mathcal C_{\mathrm{RDM}}\!\left[
+T_i\prod_{k\in \partial i\setminus j}m_{k\to i}
+\right],
+\end{equation}
+where \(\partial i\) denotes the neighbors of \(i\), and \(\mathcal C_{\mathrm{RDM}}\) compresses the outgoing temporal MPS as a standalone object.
+
+Our Research Summary tested an environment-dependent version of this finite-tree propagation.
+Reduced-transition-matrix (RTM) compression forms the same candidate outgoing message, but chooses its truncated subspace using the reverse message \(m_{j\to i}\) as the contraction environment,
+\begin{equation}
+m_{i\to j}\simeq
+\mathcal C_{\mathrm{RTM}}\!\left[
+T_i\prod_{k\in \partial i\setminus j}m_{k\to i};
+m_{j\to i}
+\right].
+\end{equation}
+Operationally, all directed messages are first initialized by ordinary RDM compression using a leaf-to-root pass followed by a root-to-leaf pass.
+The RTM calculation then performs bidirectional environment-dependent sweeps, updating messages toward the root and away from the root until the compressed message equations reach a fixed point.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{treeFiniteAmplitude.png}
+    \caption{Finite-tree message propagation benchmark from the Research Summary.
+    The test computes the Loschmidt amplitude on a depth-4 binary transverse-field Ising tree with \(h_z=0.6\), \(h_x=-1.0\), and initial state \(\ket{\mathbf 0}\).
+    At the same temporal message bond dimension, RTM compression gives a smaller amplitude error than ordinary density-matrix compression, supporting the use of environment-dependent message compression on tree geometries.}
+    \label{fig:treeFiniteAmplitude}
+\end{figure}
+
+The finite-tree result in Fig.~\ref{fig:treeFiniteAmplitude} is not yet a molecular spin calculation, but it establishes the algorithmic ingredient needed for this proposal.
+On a tree, BP does not introduce an additional loop approximation, so the main numerical question is whether finite-bond-dimension temporal messages can accurately represent branch influence functionals.
+The observed RTM improvement supports the principle that a message should be compressed according to the contraction in which it will be used, rather than according to its standalone norm.
+The proposed work will test whether this advantage survives for quantum-chemistry-derived molecular spin Hamiltonians, where the interactions are generally anisotropic, nonuniform, and defined on coupling graphs that are not exactly trees.
 
 However we need to do more.
 

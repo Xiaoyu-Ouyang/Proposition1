@@ -138,10 +138,10 @@ This limitation motivates tree and graph tensor-network representations, which r
 Tree tensor network states (TTNS) are the simplest such generalization. 
 It replaces the MPS path by a loop-free graph changes the available bipartitions and can distribute correlations across several branches rather than forcing them through a single chain bond.\cite{}
 In quantum chemistry ground-state calculations, TTNS and related tree ansatzes have been developed as generalizations of DMRG for strongly correlated electronic structure problems, including variable-order TTNS and three-legged tree tensor network states \cite{nakataniEfficientTreeTensor2013,Murg2015VariableOrderTTNS,Gunst2018T3NS}.
-These studies show that tree-like molecular correlation structures can require fewer renormalized states than MPS, although the larger tensor degree and prefactors make the practical advantage system dependent.
+These studies show that tree-like molecular correlation structures can require fewer renormalized states than MPS, although the larger tensor degree and prefactors make the practical advantage system-dependent.
 Time evolution with tree tensor networks has also been developed in broader many-body settings, including early tree-network algorithms and later time-dependent variational principles for finite loop-free tensor networks \cite{Shi2006Classical,Bauernfeind2020TDVPTTNS}.
-What remains less established is a systematic use of graph-adapted tree or message-passing tensor networks for quantum-chemistry-derived molecular spin Hamiltonians, where the target observables are finite-time signals, spectra, and correlation functions rather than only ground-state energies.
-This gap motivates the central question of our proposal, that whether a tensor-network topology adapted to the molecular coupling graph can improve real-time spin dynamics accuracy at fixed computational cost relative to a one-dimensional MPS representation.
+What remains less established is a systematic use of graph-adapted tree or message-passing tensor networks for molecular spin Hamiltonians in quantum chemistry, where the target observables are finite-time signals, spectra, and correlation functions rather than only ground energies.
+This gap motivates the central question of our proposal, that whether a tensor-network topology adapted to the molecular coupling graph can improve real-time spin dynamics accuracy at fixed computational cost, especially relative to a one-dimensional MPS representation.
 
 \section{Tree Graph Tensor Network Belief Propagation Method}
 Here we can introduce the belief propagation method into it. For introduction of BP see research summary. (Can also copy or generate a short summary from it).

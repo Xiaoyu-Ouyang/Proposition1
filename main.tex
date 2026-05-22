@@ -268,6 +268,39 @@ or the corresponding message entropy in the mixed-state or operator-space calcul
 The key test is whether lower weighted tree-distance or weighted-cut cost predicts lower message complexity and smaller observable error.
 If the short-time dynamical-correlation tree gives only marginal improvement over the Hamiltonian-weighted tree, the Hamiltonian-weighted tree will be preferred because it is cheaper and directly available from the molecular spin Hamiltonian.
 
+\subsection*{Working notes for remaining validation design}
+
+One thing we still did not resolve is whether people have tried to use tree tensor networks to simulate dynamics in quantum chemistry.
+This does not have to be BP; it could be simple-update or TDVP-style tree evolution.
+If yes, we should cite the relevant work.
+If no, we should summarize why the gap may exist, based on the current research landscape.
+
+The molecular spin problem also has a different Hamiltonian geometry from the regular TFIM tree.
+The interactions are nonuniform and not restricted to the tensor-network tree.
+We should identify concrete molecule or molecular-spin examples where this geometry matters.
+
+Then we need to compare the problem of doing simple tree evolution with the problem of doing BP on the same tree.
+What is the advantage of BP on regular trees for TFIM or other spin models?
+Does the advantage still exist for nonuniform molecular spin Hamiltonians?
+How should we test this?
+
+For validation, one useful first check is whether different choices of tree graph change the temporal entanglement entropy or message entropy in the same way that tree topology changes ground-state entanglement in TTNS.
+Mixed-state input must also be considered, because ZF NMR starts from a high-temperature deviation density matrix rather than a pure ground state.
+
+The specific thing to check is scaling.
+The most potential advantage of BP would be in larger systems or longer simulation times.
+We should estimate the scaling of a 1D MPS calculation for this molecular Hamiltonian.
+Relevant quantities include total simulation time, required bond dimension as a function of physical time, and scaling with system size.
+We should then compare this with tree simple update and tree BP.
+
+It is possible that the scaling advantage will not be dramatic.
+If so, the argument for tree BP may instead be improved accuracy at fixed cost or a better entanglement and message-compression structure.
+
+Another possible advantage of BP is the ability to exploit light-cone structure for local observables.
+Light-cone truncation is useful only when the spatial scale of the system is large compared with the dynamical light cone over the target time.
+We need to evaluate whether the molecular spin systems of interest have this property.
+If yes, we should quantify the benefit of local-observable-focused message updates.
+
 \section{Discussion}
 
 

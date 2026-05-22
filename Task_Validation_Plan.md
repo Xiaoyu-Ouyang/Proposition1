@@ -40,9 +40,34 @@ S_e^{\rm state}(t)=-\mathrm{Tr}\,\rho_{A_e}(t)\log\rho_{A_e}(t),
 \]
 where cutting \(e\) partitions the tree into \(A_e\) and \(\bar A_e\).
 
+This spatial or tree-edge entropy controls the bond dimension needed by a TTNS state representation across that edge.
+
 For IF-BP, the temporal or message entanglement is the entropy of a temporal MPS message across time-direction bonds.
 
-This should be summarized by the maximum and average message entropy over directed tree edges and temporal cuts.
+For a directed message \(m_{i\to j}\), cut the temporal MPS between time slices \(\tau\) and \(\tau+1\), and define
+\[
+S^{\rm msg}_{i\to j}(\tau)
+=
+-\mathrm{Tr}\,\sigma_{i\to j,\tau}\log\sigma_{i\to j,\tau},
+\]
+where \(\sigma_{i\to j,\tau}\) is the reduced density matrix of the temporal message across that time cut.
+
+This temporal or message entropy controls the bond dimension needed to represent the IF-BP message.
+
+It should be summarized by the maximum and average message entropy over directed tree edges and temporal cuts,
+\[
+S^{\rm msg}_{\max}
+=
+\max_{i\to j,\tau} S^{\rm msg}_{i\to j}(\tau),
+\]
+and
+\[
+S^{\rm msg}_{\rm avg}
+=
+\frac{1}{|\vec E|N_t}\sum_{i\to j}\sum_\tau S^{\rm msg}_{i\to j}(\tau).
+\]
+
+For RTM compression, an additional diagnostic is the singular-value spectrum or entropy of the reduced transition matrix used to choose the message subspace.
 
 For mixed-state or operator-space calculations, use the corresponding purified-state or operator-space entropy and always report message discarded weights.
 

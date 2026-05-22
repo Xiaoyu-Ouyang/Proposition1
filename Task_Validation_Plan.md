@@ -32,6 +32,50 @@ For local observables, it may also be unnecessary to fully sweep and converge ev
 
 The proposed extension is to combine DIIS with asynchronous or importance-weighted message updates, focusing effort on messages with large RTM residuals or strong influence on the target local observable.
 
+## Task 2: Select and Validate Molecular Tree Topologies
+
+Molecular spin Hamiltonians differ from the finite-tree TFIM benchmark in two important ways.
+
+The interaction is generally not Ising-like: for ZF NMR the dominant coupling is scalar \(J_{ij}\mathbf I_i\cdot\mathbf I_j\), and more general molecular spin Hamiltonians can include anisotropic bilinear tensors.
+
+The natural molecular coupling graph is also not usually a tree, so a tree tensor-network topology must be constructed from a weighted molecular graph.
+
+The first and primary construction should be Hamiltonian-weighted.
+
+For scalar-coupled nuclear spins, use \(w_{ij}=|J_{ij}|\).
+
+For a general bilinear spin Hamiltonian \(H_{ij}=\mathbf S_i^\mathsf T A_{ij}\mathbf S_j\), use \(w_{ij}=\|A_{ij}\|_F\).
+
+The tree can then be chosen to keep large-weight pairs close, for example by minimizing \(\sum_{i<j} w_{ij}d_T(i,j)\) or a weighted-cut bottleneck objective over candidate degree-bounded trees.
+
+This is the closest analogue of the \(K_{ij}\)-based tree construction used in quantum-chemistry TTNS ground-state calculations, where exchange integrals are cheap proxies for orbital correlation.
+
+The second construction should use initial-state pair correlations or mutual information.
+
+For an initial density matrix \(\rho_0\), define \(w_{ij}=I_{ij}(0)=S_i(0)+S_j(0)-S_{ij}(0)\), when this quantity is informative.
+
+For high-temperature ZF NMR initial states, this may be weak or uninformative because the state is close to the identity plus a small deviation density matrix.
+
+In that case, initial two-point deviation correlations may be a better diagnostic than literal full-density-matrix mutual information.
+
+The third construction should be a short-time dynamical-correlation tree.
+
+Rather than calling this temporal mutual information, use the term short-time dynamical pair mutual information or time-averaged pair correlation to avoid confusion with temporal-MPS entanglement.
+
+One option is \(w_{ij}=T_0^{-1}\int_0^{T_0} I_{ij}(t)\,dt\), estimated from a low-cost short-time pilot calculation.
+
+Another option, likely more robust for mixed-state spin dynamics, is \(w_{ij}=T_0^{-1}\int_0^{T_0}|C_{ij}(t)|\,dt\), where \(C_{ij}(t)\) is a connected two-point spin correlation relevant to the target observable.
+
+This third construction is more expensive and risks circularity, because it may require a preliminary MPS TEBD or exact small-system calculation before the tree is known.
+
+Therefore it should be treated as a diagnostic or adaptive refinement, not as the primary method.
+
+The validation question is whether increasingly informed tree choices actually reduce message complexity and observable error at fixed bond dimension.
+
+The expected comparison is Hamiltonian-weighted tree versus initial-correlation tree versus short-time dynamical-correlation tree, with random trees and 1D MPS orderings as controls.
+
+If the dynamical-correlation tree gives only marginal improvement over the Hamiltonian-weighted tree, the Hamiltonian-weighted tree should be preferred because it is cheaper and directly available from quantum chemistry.
+
 ## Validation Metrics
 
 The first diagnostic should be the maximum or average RTM message residual versus iteration or sweep round.
@@ -44,6 +88,10 @@ For the DIIS study, the main comparison should include sequential BP-TM without 
 
 For molecular-spin validation, the same diagnostics should be repeated on irregular coupling-weighted trees and compared with exact or MPS baselines when available.
 
+For tree-topology validation, the diagnostics should include the target observable error, the spectrum error after Fourier transform, the maximum tree-edge entropy or message discarded weight, and the correlation between weighted cut cost and observed message complexity.
+
+For short-time dynamical-correlation trees, the construction cost of the pilot calculation should be reported separately from the final BP simulation cost.
+
 ## Open Questions
 
 What residual definition best predicts observable accuracy for finite-tree RTM message propagation?
@@ -55,3 +103,9 @@ Should DIIS be applied globally to all directed messages, locally to each messag
 What importance score should determine asynchronous message updates in an irregular molecular tree: RTM residual, coupling strength, graph distance from the observable, message discarded weight, or a combination of these?
 
 Does DIIS remain useful when the target observable is local and only a subset of tree messages is converged tightly?
+
+Does \(I_{ij}(0)\) contain useful information for high-temperature ZF NMR initial states, or should the initial-correlation tree use deviation-density correlations instead?
+
+How short can the pilot time window \(T_0\) be while still predicting the best tree for the longer target simulation time?
+
+How much improvement must the short-time dynamical-correlation tree provide to justify its additional pilot-simulation cost?

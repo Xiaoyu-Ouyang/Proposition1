@@ -287,6 +287,7 @@ w_{ij}=I_{ij}(0)=S_i(0)+S_j(0)-S_{ij}(0).
 \end{equation}
 For high-temperature ZF NMR initial states, however, the full density matrix is close to the identity plus a small deviation density matrix, so \(I_{ij}(0)\) may be weak or uninformative.
 In that case, initial deviation-density correlations or target-observable two-point correlations may be a more useful initial-state diagnostic than literal full-density-matrix mutual information.
+If the initial state is instead a strongly correlated mixed thermal state or a ground state with substantial entanglement, initial-correlation construction may become more important than Hamiltonian-weighted construction because the tree must represent the initial state before any real-time growth occurs.
 
 The third strategy is short-time dynamical-correlation construction.
 Here a low-cost pilot calculation, such as exact evolution on small systems or short-time MPS evolution, estimates which spin pairs become dynamically correlated before the target simulation time.
@@ -340,18 +341,15 @@ The observables will include local magnetization, free-induction decay, Fourier-
 The diagnostics will again compare TTNS tree-edge entropy, IF-BP temporal-message entropy, message discarded weight, runtime, and the bond dimension needed to reach a fixed observable tolerance.
 A central validation is how these quantities scale with simulation time, system size, off-tree coupling strength \(\lambda\), and off-tree coupling density.
 A key validation question is whether tree choices that look good by Hamiltonian weights or static correlation measures also reduce temporal-message entropy during real-time dynamics.
-For the high-temperature ZF NMR initial state, the initial density operator is expected to have low TTNS or TTNO bond dimension, so the main bottleneck should come from real-time growth of state or message complexity.
-Mixed-state initial-state complexity should be treated separately only when studying genuinely thermal or ground-state initial states.
-Because the target observables are local or low-dimensional response functions, we will also test whether IF-BP can exploit an effective light cone by updating only messages within a chosen radius or above an importance threshold.
-This light-cone test will be treated as a possible efficiency gain for local observables, not as an assumed property of all molecular spin dynamics.
-If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, failure of the selected tree topology, or absence of a useful local-observable light cone.
+If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, or failure of the selected tree topology.
 
 \section{Discussion}
 
-
-
-
-
+For the molecular spin systems considered here, a geometric light-cone truncation is unlikely to be the primary approximation strategy.
+In ZF NMR, chemically useful spectra often require evolution times long enough that \(Jt\) is not small on the active coupling graph, while the relevant small-molecule spin networks are not much larger than this effective propagation range.
+In electron-nuclear central-spin systems, the graph is often star-like, so many nuclear spins are only one hyperfine edge away from the observed electron spin.
+Light-cone or neighborhood truncation may still be useful for unusually large sparse spin networks, but it should be tested as a secondary diagnostic rather than assumed as a central advantage of IF-BP.
+The main validation in this proposal will therefore focus on entropy growth, bond-dimension requirements, observable error, and sensitivity to the selected molecular tree topology.
 
 
 

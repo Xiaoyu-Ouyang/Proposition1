@@ -202,6 +202,25 @@ S_{i\to j}^{\rm msg}(\tau)=-\mathrm{Tr}\,\sigma_{i\to j,\tau}\log\sigma_{i\to j,
 \end{equation}
 The first entropy controls the TTNS bond dimension, while the second controls the temporal message bond dimension needed by IF-BP.
 The hypothesis is that local observables can have low temporal-message complexity even when the global TTNS state has substantial tree-edge entanglement; the benchmark will test rather than assume this hypothesis.
+This comparison is motivated by the standard bottleneck in state-based real-time tensor-network evolution: after generic quenches, spatial entanglement often grows approximately linearly in time, so the bond dimension required for a fixed state accuracy can grow exponentially with time \cite{Vidal2003EfficientClassical,Calabrese2005EntanglementEvolution,Paeckel2019MpsTimeEvolution}.
+Influence-functional methods shift the relevant resource from spatial entanglement to temporal entanglement, which can be much smaller and even logarithmic in time in favorable models, but this behavior must be tested for finite trees and molecular spin Hamiltonians rather than assumed \cite{Sonner2021InfluenceFunctional,Park2025IFBP}.
+The benchmark will therefore record the maximum TTNS state entropy,
+\begin{equation}
+S_{\max}^{\rm state}(t,N)=\max_e S_e^{\rm state}(t),
+\end{equation}
+and the maximum IF-BP message entropy,
+\begin{equation}
+S_{\max}^{\rm msg}(t,N)=\max_{i\to j,\tau}S_{i\to j}^{\rm msg}(\tau).
+\end{equation}
+It will also compare fixed-time observable errors at fixed bond dimension,
+\begin{equation}
+\epsilon_O(\chi,t)=\left|O_\chi(t)-O_{\rm ref}(t)\right|,
+\end{equation}
+and the bond dimension needed to reach a fixed tolerance,
+\begin{equation}
+\chi_{\rm req}(t,N;\epsilon)=\min\{\chi:\epsilon_O(\chi,t)\le \epsilon\}.
+\end{equation}
+For TTNS, \(\chi\) denotes the state bond dimension \(\chi_{\rm state}\), while for IF-BP it denotes the temporal message bond dimension \(\chi_{\rm msg}\).
 
 Within this aim, the first concrete algorithmic task is to stabilize and accelerate the RTM message fixed-point iteration.
 For compression schemes that treat each outgoing message independently, such as ordinary density-matrix compression, fitting-based compression, direct compression, SRC, or zip-up compression, tree message propagation is usually a single directional contraction with no nonlinear environment-consistency problem.
@@ -277,13 +296,14 @@ We will therefore treat it as a diagnostic or adaptive refinement, rather than a
 
 The validation will ask whether these increasingly informed trees reduce the actual bottlenecks in the BP dynamics.
 For each molecular spin Hamiltonian, we will compare random trees, one-dimensional MPS orderings, Hamiltonian-weighted trees, initial-correlation trees, and short-time dynamical-correlation trees.
-At fixed message bond dimension and comparable computational cost, the primary observables will be finite-time magnetization or FID error, spectrum error after Fourier transform, message discarded weight, and the maximum or average entropy across tree edges.
+At fixed bond dimension and comparable computational cost, the primary observables will be finite-time magnetization or FID error, spectrum error after Fourier transform, message discarded weight, \(S_{\max}^{\rm msg}\), \(S_{\max}^{\rm state}\), \(\epsilon_O(\chi,t)\), and \(\chi_{\rm req}(t,N;\epsilon)\).
 For a tree edge \(e\) that partitions the sites into \(A_e\) and \(\bar A_e\), one diagnostic is
 \begin{equation}
 S_e(t)=-\mathrm{Tr}\,\rho_{A_e}(t)\log \rho_{A_e}(t),
 \end{equation}
 or the corresponding message entropy in the mixed-state or operator-space calculation.
-The key test is whether lower weighted tree-distance or weighted-cut cost predicts lower message complexity and smaller observable error.
+The key test is whether lower weighted tree-distance or weighted-cut cost predicts lower state entropy, lower message entropy, and smaller observable error during real-time dynamics.
+This explicitly checks whether a tree that is good by Hamiltonian weights or static correlations is also good for temporal-message compression.
 If the short-time dynamical-correlation tree gives only marginal improvement over the Hamiltonian-weighted tree, the Hamiltonian-weighted tree will be preferred because it is cheaper and directly available from the molecular spin Hamiltonian.
 
 \subsection{Aim 3: Test molecular spin Hamiltonians on selected trees}
@@ -303,38 +323,21 @@ H_{\rm mol}=\sum_{i<j}J_{ij}\mathbf I_i\cdot\mathbf I_j,
 \end{equation}
 while using the same selected TTNS or BP tree as the computational geometry.
 This tests whether the tree remains useful when it is only an optimized approximation to a weighted molecular coupling graph.
+To quantify the effect of off-tree interactions, we will also interpolate between the tree-local and full Hamiltonians,
+\begin{equation}
+H(\lambda)=H_T+\lambda H_{\rm off},
+\end{equation}
+where \(H_T\) contains couplings on the selected tree and \(H_{\rm off}\) contains the remaining molecular couplings.
 The same methods as in Aim 1 will be compared whenever feasible: TTNS-TEBD-style evolution, TTNS-TDVP, IF-BP-RDM, IF-BP-RTM, and IF-BP-RTM with DIIS.
 The observables will include local magnetization, free-induction decay, Fourier-transformed spectrum error, or local correlation functions, depending on the model.
 The diagnostics will again compare TTNS tree-edge entropy, IF-BP temporal-message entropy, message discarded weight, runtime, and the bond dimension needed to reach a fixed observable tolerance.
+A central validation is how these quantities scale with simulation time, system size, off-tree coupling strength \(\lambda\), and off-tree coupling density.
 A key validation question is whether tree choices that look good by Hamiltonian weights or static correlation measures also reduce temporal-message entropy during real-time dynamics.
 For the high-temperature ZF NMR initial state, the initial density operator is expected to have low TTNS or TTNO bond dimension, so the main bottleneck should come from real-time growth of state or message complexity.
 Mixed-state initial-state complexity should be treated separately only when studying genuinely thermal or ground-state initial states.
-If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, or failure of the selected tree topology.
-
-
-
-
-
-(The specific thing to check is scaling. 
-
-This is the most potential advantage of BP. 
-In large size/long time.
-
-But we are pretty not sure on this. We should have:
-
-The approximation of scaling of 1D for this molecular Hamiltonian. 
-Total time, or bond dimension's scaling with simulation time and system size?
-And then scaling of tree? using simple update, and BP.
-
-Or maybe, the scaling might not show the advantage of tree. 
-
-But the accuracy, or the better entanglement structure.)
-
-Another thing that BP might have advantage is, we can use the lightcone structure.
-
-We all know that lightcone structure need the space scale to be much large than the time scale. Does the system we care about have this property? Evaluate this.
-
-If yes, let's evaluate the benefit we could have from the lightcone.
+Because the target observables are local or low-dimensional response functions, we will also test whether IF-BP can exploit an effective light cone by updating only messages within a chosen radius or above an importance threshold.
+This light-cone test will be treated as a possible efficiency gain for local observables, not as an assumed property of all molecular spin dynamics.
+If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, failure of the selected tree topology, or absence of a useful local-observable light cone.
 
 \section{Discussion}
 

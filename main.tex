@@ -136,7 +136,7 @@ Nevertheless, these heuristics cannot remove the constraint that the tensor-netw
 
 This limitation motivates tree and graph tensor-network representations, which relax the one-dimensional path constraint and allow the network connectivity to better reflect branching or modular structures in the molecular coupling graph.
 Tree tensor network states (TTNS) are the simplest such generalization. 
-It replaces the MPS path by a loop-free graph changes the available bipartitions and can distribute correlations across several branches rather than forcing them through a single chain bond.
+Replacing the MPS path by a loop-free graph changes the available bipartitions and can distribute correlations across several branches rather than forcing them through a single chain bond \cite{nakataniEfficientTreeTensor2013}.
 In quantum chemistry ground-state calculations, TTNS and related tree ansatzes have been developed as generalizations of DMRG for strongly correlated electronic structure problems, including variable-order TTNS and three-legged tree tensor network states \cite{nakataniEfficientTreeTensor2013,Murg2015VariableOrderTTNS,Gunst2018T3NS}.
 These studies show that tree-like molecular correlation structures can require fewer renormalized states than MPS, although the larger tensor degree and prefactors make the practical advantage system-dependent.
 Time evolution with tree tensor networks has also been developed in broader many-body settings, including early tree-network algorithms and later time-dependent variational principles for finite loop-free tensor networks \cite{Shi2006Classical,Bauernfeind2020TDVPTTNS}.

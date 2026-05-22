@@ -141,7 +141,7 @@ In quantum chemistry ground-state calculations, TTNS and related tree ansatzes h
 These studies show that tree-like molecular correlation structures can require fewer renormalized states than MPS, although the larger tensor degree and prefactors make the practical advantage system-dependent.
 Time evolution with tree tensor networks has also been developed in broader many-body settings, including early tree-network algorithms and later time-dependent variational principles for finite loop-free tensor networks \cite{Shi2006Classical,Bauernfeind2020TDVPTTNS}.
 What remains less established is a systematic use of graph-adapted tree or message-passing tensor networks for molecular spin Hamiltonians in quantum chemistry, where the target observables are finite-time signals, spectra, and correlation functions rather than only ground energies.
-This gap motivates the central question of our proposal, that whether a tensor-network topology adapted to the molecular coupling graph can improve real-time spin dynamics accuracy at fixed computational cost, especially relative to a one-dimensional MPS representation.
+This gap motivates the central question of this proposal: whether a tensor-network topology adapted to the molecular coupling graph can improve real-time spin dynamics accuracy at fixed computational cost, especially relative to a one-dimensional MPS representation.
 
 \section{Tree Graph Tensor Network Belief Propagation Method}
 
@@ -149,6 +149,8 @@ Belief propagation provides a natural contraction language for tensor networks w
 For tree graphical models and tree tensor networks, BP gives an exact contraction structure; it becomes an approximation only when the graph contains loops or when the messages themselves are compressed \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}.
 Recent influence-functional BP methods use this idea for quantum dynamics by representing each directed spatial message as a temporal tensor network that summarizes the dynamical influence of one branch on the rest of the system \cite{Park2025IFBP}.
 This is closely related to earlier tree tensor network dynamics and time-dependent variational principles on loop-free tensor networks \cite{Shi2006Classical,Bauernfeind2020TDVPTTNS}.
+
+\subsection{Aim 1: Benchmark IF-BP against TTNS time evolution on finite trees}
 
 In a Trotterized spacetime tensor network on a finite tree, each spin site contributes a local temporal tensor or temporal matrix product operator \(T_i\), and each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\).
 This message represents the whole branch attached to \(i\) after cutting the edge \((i,j)\).
@@ -185,9 +187,23 @@ The RTM calculation then performs bidirectional environment-dependent sweeps, up
 The finite-tree result in Fig.~\ref{fig:treeFiniteAmplitude} is not yet a molecular spin calculation, but it establishes the algorithmic ingredient needed for this proposal.
 On a tree, BP does not introduce an additional loop approximation, so the main numerical question is whether finite-bond-dimension temporal messages can accurately represent branch influence functionals.
 The observed RTM improvement supports the principle that a message should be compressed according to the contraction in which it will be used, rather than according to its standalone norm.
-The proposed work will test whether this advantage survives for quantum-chemistry-derived molecular spin Hamiltonians, where the interactions are generally anisotropic, nonuniform, and defined on coupling graphs that are not exactly trees.
+The first aim is to compare this observable-targeted IF-BP contraction against state-based TTNS time evolution on the same finite tree.
+The clean benchmark will use a depth-4 binary-tree transverse-field Ising model with a local observable measured at the center.
+The methods to compare are TTNS-TEBD-style local-gate evolution, TTNS-TDVP if feasible, IF-BP-RDM, IF-BP-RTM, and IF-BP-RTM with DIIS stabilization.
+The main accuracy metric will be the local observable error against exact evolution or a high-bond-dimension reference.
+The main complexity metric will compare TTNS tree-edge state entanglement with IF-BP temporal-message entanglement.
+For TTNS state evolution, cutting a tree edge \(e\) partitions the sites into \(A_e\) and \(\bar A_e\), and the relevant entropy is
+\begin{equation}
+S_e^{\rm state}(t)=-\mathrm{Tr}\,\rho_{A_e}(t)\log\rho_{A_e}(t).
+\end{equation}
+For IF-BP, a directed message \(m_{i\to j}\) is a temporal MPS, and cutting it between time slices \(\tau\) and \(\tau+1\) defines
+\begin{equation}
+S_{i\to j}^{\rm msg}(\tau)=-\mathrm{Tr}\,\sigma_{i\to j,\tau}\log\sigma_{i\to j,\tau}.
+\end{equation}
+The first entropy controls the TTNS bond dimension, while the second controls the temporal message bond dimension needed by IF-BP.
+The hypothesis is that local observables can have low temporal-message complexity even when the global TTNS state has substantial tree-edge entanglement; the benchmark will test rather than assume this hypothesis.
 
-The first concrete algorithmic task is to stabilize and accelerate the RTM message fixed-point iteration.
+Within this aim, the first concrete algorithmic task is to stabilize and accelerate the RTM message fixed-point iteration.
 For compression schemes that treat each outgoing message independently, such as ordinary density-matrix compression, fitting-based compression, direct compression, SRC, or zip-up compression, tree message propagation is usually a single directional contraction with no nonlinear environment-consistency problem.
 RTM is more accurate because it chooses the message subspace using the reverse message as an environment, but this also makes the message equations mutually dependent and can require repeated sweeps.
 Direct inversion in the iterative subspace (DIIS) is a natural way to stabilize such fixed-point iterations by extrapolating from previous message residuals \cite{pulayConvergenceAccelerationIterative1980,pulayImprovedSCFConvergence1982}.
@@ -204,6 +220,8 @@ Direct inversion in the iterative subspace (DIIS) is a natural way to stabilize 
 Figure~\ref{fig:bpTmSequentialDiis} suggests that DIIS is useful primarily as a stabilization tool for environment-dependent RTM updates, rather than as a black-box guarantee of faster convergence in every case.
 For molecular spin graphs, the tree will generally be irregular rather than a perfect binary tree, and local observables need not require globally converging every message with equal effort.
 A practical implementation should therefore combine DIIS with asynchronous or importance-weighted message updates, focusing computational effort on branches whose RTM residuals remain large or whose messages have the strongest influence on the target local observable.
+
+\subsection{Aim 2: Construct molecular tree topologies}
 
 The second concrete task is to choose tree geometries for molecular spin Hamiltonians and validate whether those geometries improve the finite-time dynamics.
 This problem does not arise in the binary-tree TFIM benchmark, where the Hamiltonian graph is already the same tree used by the tensor network.
@@ -268,25 +286,30 @@ or the corresponding message entropy in the mixed-state or operator-space calcul
 The key test is whether lower weighted tree-distance or weighted-cut cost predicts lower message complexity and smaller observable error.
 If the short-time dynamical-correlation tree gives only marginal improvement over the Hamiltonian-weighted tree, the Hamiltonian-weighted tree will be preferred because it is cheaper and directly available from the molecular spin Hamiltonian.
 
-One thing we still didn't do is, is there any people try to use tree tensor network to simulate dynamics in quantum chemistry? No need to be BP method, can just be simple update. 
-If yes, find references; If no, given the current situation of research, can we find the reason explained in references? Or summarize by ourself.
+\subsection{Aim 3: Test molecular spin Hamiltonians on selected trees}
 
-Anyway, here the difference is the new Hamiltonian geometry. Not uniform interaction.
-
-(What kind of molecule it could be? Some examples? Protein?)
-
-Then, we need to find, or approximate the problem of doing this simple update of tree, to see what advantage we might have for doing BP on this.
-
-What is the advantage for BP in regular trees of TFIM, or other models, not have to be in quantum chemistry, molecules?
-
-Does the advantage still exist? How to test them?
-
-For validation, or initial steps of doing this research, maybe worth checking:
-
-Different selection of tree graph, temporal entanglement entropy still behaves the same as ground state does? Or not?
-
-
-(Mixed state as input also need to be considered. )
+The third aim is to test whether the IF-BP advantage found in Aim 1 survives after replacing the clean tree-local TFIM by molecular spin Hamiltonians on the tree chosen in Aim 2.
+This aim separates two effects that are absent from the binary-tree TFIM benchmark: non-Ising spin interactions and off-tree molecular couplings.
+The initial molecular targets should be scalar-coupled spin networks from ZF NMR benchmarks, such as small organic molecules, metabolites, amino acids, or short peptides, rather than full proteins unless the relevant spin subnetwork can be isolated.
+The first stage uses a tree-local molecular-like spin Hamiltonian,
+\begin{equation}
+H_{\rm tree\text{-}mol}=\sum_{(ij)\in T}J_{ij}\mathbf I_i\cdot\mathbf I_j,
+\end{equation}
+with nonuniform scalar couplings on the selected tree.
+This isolates the effect of replacing Ising interactions by Heisenberg-like scalar spin couplings while keeping the Hamiltonian graph equal to the tensor-network tree.
+The second stage uses the full molecular spin Hamiltonian,
+\begin{equation}
+H_{\rm mol}=\sum_{i<j}J_{ij}\mathbf I_i\cdot\mathbf I_j,
+\end{equation}
+while using the same selected TTNS or BP tree as the computational geometry.
+This tests whether the tree remains useful when it is only an optimized approximation to a weighted molecular coupling graph.
+The same methods as in Aim 1 will be compared whenever feasible: TTNS-TEBD-style evolution, TTNS-TDVP, IF-BP-RDM, IF-BP-RTM, and IF-BP-RTM with DIIS.
+The observables will include local magnetization, free-induction decay, Fourier-transformed spectrum error, or local correlation functions, depending on the model.
+The diagnostics will again compare TTNS tree-edge entropy, IF-BP temporal-message entropy, message discarded weight, runtime, and the bond dimension needed to reach a fixed observable tolerance.
+A key validation question is whether tree choices that look good by Hamiltonian weights or static correlation measures also reduce temporal-message entropy during real-time dynamics.
+For the high-temperature ZF NMR initial state, the initial density operator is expected to have low TTNS or TTNO bond dimension, so the main bottleneck should come from real-time growth of state or message complexity.
+Mixed-state initial-state complexity should be treated separately only when studying genuinely thermal or ground-state initial states.
+If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, or failure of the selected tree topology.
 
 
 

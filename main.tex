@@ -72,15 +72,19 @@
 
 \begin{abstract}
 \noindent
+Molecular spin dynamics converts quantum-chemistry-derived spin Hamiltonians into experimentally measured time-domain signals, spectra, and correlation functions.
+This proposal focuses on isolated or approximately isolated coherent spin dynamics on molecular coupling graphs, with zero-field nuclear magnetic resonance as the primary concrete application.
+Exact Hilbert- or Liouville-space propagation is exponentially limited, while standard matrix-product-state methods require embedding the molecular spin graph into a one-dimensional chain, where long-range couplings and unfavorable entanglement cuts can become artificial bottlenecks.
+I propose to develop and validate tree-adapted tensor-network and influence-functional belief-propagation methods for real-time molecular spin dynamics.
+The project has three aims: first, benchmark IF-BP against tree tensor network state evolution on controlled finite-tree spin models; second, construct and test molecular tree topologies from Hamiltonian weights, initial correlations, and short-time dynamical correlations; and third, determine whether the IF-BP advantage survives for nonuniform molecular spin Hamiltonians with off-tree couplings.
+The central validation will compare observable errors, spectra, tree-edge state entanglement, temporal-message entanglement, discarded weights, and the bond dimension required to reach fixed accuracy.
+The expected outcome is a principled assessment of when graph-adapted message passing can extend chemically relevant spin-dynamics simulations beyond exact methods and one-dimensional tensor-network baselines.
 
 \end{abstract}
 
 % --- Body (counts toward the 15-page limit) ------------------------------
 \setcounter{page}{1}
 
-
-\section{Central Claim}
-Use tree graph tensor network and belief propagation to simulate the large scale spin dynamics in quantum chemistry.
 
 \section{Background and Motivation}
 
@@ -340,14 +344,8 @@ The diagnostics will again compare TTNS tree-edge entropy, IF-BP temporal-messag
 A central validation is how these quantities scale with simulation time, system size, off-tree coupling strength \(\lambda\), and off-tree coupling density.
 A key validation question is whether tree choices that look good by Hamiltonian weights or static correlation measures also reduce temporal-message entropy during real-time dynamics.
 If IF-BP loses its advantage when strong off-tree couplings are included, the validation should identify whether the bottleneck is interaction nonlocality, rapid message-entropy growth, or failure of the selected tree topology.
-
-\section{Discussion}
-
-For the molecular spin systems considered here, a geometric light-cone truncation is unlikely to be the primary approximation strategy.
-In ZF NMR, chemically useful spectra often require evolution times long enough that \(Jt\) is not small on the active coupling graph, while the relevant small-molecule spin networks are not much larger than this effective propagation range.
-In electron-nuclear central-spin systems, the graph is often star-like, so many nuclear spins are only one hyperfine edge away from the observed electron spin.
-Light-cone or neighborhood truncation may still be useful for unusually large sparse spin networks, but it should be tested as a secondary diagnostic rather than assumed as a central advantage of IF-BP.
-The main validation in this proposal will therefore focus on entropy growth, bond-dimension requirements, observable error, and sensitivity to the selected molecular tree topology.
+As a secondary diagnostic, we will also check whether unusually large sparse spin networks admit useful coupling-weighted neighborhoods or light-cone-like truncations.
+However, for the primary ZF NMR and central-spin settings, the main validation will focus on entropy growth, bond-dimension requirements, observable error, and sensitivity to the selected molecular tree topology.
 
 
 

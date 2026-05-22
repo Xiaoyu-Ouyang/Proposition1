@@ -8,29 +8,57 @@ The proposal focuses on isolated or approximately isolated coherent spin-Hamilto
 
 The primary application target is zero-field and liquid-state nuclear magnetic resonance spectra, with isolated molecular spin graphs as the main validation platform.
 
-The algorithmic focus is tree or graph tensor-network message propagation, especially finite-tree belief propagation with temporal MPS messages and environment-dependent RTM compression.
+The algorithmic focus is tree or graph tensor-network message propagation, especially finite-tree influence-functional belief propagation (IF-BP) with temporal MPS messages and environment-dependent RTM compression.
 
-## Task 1: Stabilize RTM Message Propagation with DIIS
+## Task 1: Compare IF-BP and TTNS Time Evolution on Finite Trees
 
-RTM message propagation is more accurate than independent message compression because each outgoing message is compressed using the reverse message as its contraction environment.
+The first validation task is broader than adding DIIS.
 
-This environment dependence also makes the message equations mutually coupled, so the finite-tree RTM update becomes a nonlinear fixed-point problem that may require repeated sweeps.
+The central question is whether IF-BP with RDM or RTM temporal messages gives lower observable error or lower effective entanglement cost than state-based TTNS time evolution on the same finite tree.
 
-By contrast, independent compression schemes such as ordinary density-matrix compression, fitting-based compression, direct compression, SRC, and zip-up compression usually do not have the same environment-consistency convergence issue on a tree.
+This is not a claim that BP on trees has never been studied.
 
-Direct inversion in the iterative subspace (DIIS) is therefore a natural first stabilization tool for RTM message updates.
+The missing comparison is a systematic finite-tree benchmark between observable-targeted IF-BP contraction and TTNS state evolution, using the same Hamiltonian, the same tree geometry, and the same finite-time local observables.
 
-The current binary-tree TFIM test uses the same depth-4 finite tree as the Research Summary benchmark and measures the fixed-time Loschmidt amplitude during message iteration.
+The clean first benchmark should be a depth-4 binary tree transverse-field Ising model with a local observable measured at the center.
 
-The preliminary result shows that sequential BP-TM updates without DIIS have visible oscillations, while DIIS stabilizes the approach to the same fixed-point amplitude reached by sweep-based RTM.
+The reference should be exact evolution when feasible or a high-bond-dimension tree/MPS calculation when exact evolution is too expensive.
+
+The methods to compare are TTNS-TEBD-style local gate evolution, TTNS-TDVP if feasible, IF-BP-RDM, IF-BP-RTM, and IF-BP-RTM with DIIS stabilization.
+
+Relevant existing methods include tree TEBD-style evolution by Shi, Duan, and Vidal, TTNS-TDVP by Bauernfeind and Aichhorn, and IF-BP dynamics by Park, Gray, and Chan.
+
+The primary observable metric should be local observable error versus physical time and versus computational cost.
+
+For the center-site benchmark, examples include center magnetization, center two-point correlation functions, or the fixed-time local observable used in the Research Summary.
+
+The entanglement comparison must distinguish state entanglement from message entanglement.
+
+For TTNS state evolution, the spatial or tree-edge entanglement across a tree edge \(e\) is
+\[
+S_e^{\rm state}(t)=-\mathrm{Tr}\,\rho_{A_e}(t)\log\rho_{A_e}(t),
+\]
+where cutting \(e\) partitions the tree into \(A_e\) and \(\bar A_e\).
+
+For IF-BP, the temporal or message entanglement is the entropy of a temporal MPS message across time-direction bonds.
+
+This should be summarized by the maximum and average message entropy over directed tree edges and temporal cuts.
+
+For mixed-state or operator-space calculations, use the corresponding purified-state or operator-space entropy and always report message discarded weights.
+
+The validation hypothesis is that local observables may have low temporal-message complexity even when the global TTNS state has large tree-edge entanglement.
+
+The validation should not assume this is true; it should measure whether the temporal-message entropy grows more slowly than the TTNS state entropy and whether that difference predicts observable accuracy.
+
+DIIS belongs inside this task as a stabilization subtask for RTM.
+
+RTM is more accurate because each outgoing message is compressed using the reverse message as its contraction environment, but this makes the message equations mutually coupled and can require repeated sweeps.
+
+The current binary-tree TFIM test shows that sequential BP-TM updates without DIIS have visible oscillations, while DIIS stabilizes the approach to the same fixed-point amplitude reached by sweep-based RTM.
 
 This should be interpreted as evidence for improved stability, not yet as a universal acceleration result.
 
-For realistic molecular spin Hamiltonians, the selected tree will generally be irregular rather than a perfect binary tree.
-
-For local observables, it may also be unnecessary to fully sweep and converge every message with equal priority.
-
-The proposed extension is to combine DIIS with asynchronous or importance-weighted message updates, focusing effort on messages with large RTM residuals or strong influence on the target local observable.
+For local-observable calculations, DIIS should also be tested with asynchronous or importance-weighted message updates that prioritize messages with large RTM residuals or strong influence on the target observable.
 
 ## Task 2: Select and Validate Molecular Tree Topologies
 
@@ -76,21 +104,51 @@ The expected comparison is Hamiltonian-weighted tree versus initial-correlation 
 
 If the dynamical-correlation tree gives only marginal improvement over the Hamiltonian-weighted tree, the Hamiltonian-weighted tree should be preferred because it is cheaper and directly available from quantum chemistry.
 
+## Task 3: Test IF-BP Advantage for Molecular Spin Hamiltonians on a Chosen Tree
+
+Task 3 uses the tree chosen in Task 2 and asks whether IF-BP still has an advantage over TTNS state evolution when the Hamiltonian is no longer the clean tree-local TFIM.
+
+This task should separate two effects: changing the interaction type and adding off-tree couplings.
+
+The first stage should use a tree-local molecular-like spin Hamiltonian,
+\[
+H_{\rm tree-mol}=\sum_{(ij)\in T}J_{ij}\mathbf I_i\cdot\mathbf I_j,
+\]
+with nonuniform scalar couplings on the chosen tree.
+
+This isolates the effect of replacing Ising interactions by Heisenberg-like scalar spin couplings while keeping the Hamiltonian graph equal to the tensor-network tree.
+
+The second stage should use the full molecular spin Hamiltonian with off-tree terms,
+\[
+H_{\rm mol}=\sum_{i<j}J_{ij}\mathbf I_i\cdot\mathbf I_j,
+\]
+while using the same selected TTNS/BP tree as the computational geometry.
+
+This tests whether the advantage of IF-BP survives when the tree is only an optimized approximation to a weighted molecular coupling graph.
+
+The methods should be the same as in Task 1 whenever feasible: TTNS-TEBD-style evolution, TTNS-TDVP if feasible, IF-BP-RDM, IF-BP-RTM, and IF-BP-RTM+DIIS.
+
+The observables should be local magnetization, free-induction decay, spectrum error after Fourier transform, or local correlation functions, depending on the model.
+
+The diagnostics should include state/tree-edge entropy for TTNS, temporal/message entropy for IF-BP, message discarded weight, runtime, and bond dimension needed to reach a fixed observable tolerance.
+
+The hypothesis should remain cautious.
+
+If Task 1 shows lower temporal-message complexity than spatial/tree-edge entanglement on clean finite trees, Task 3 tests whether that advantage survives nonuniform couplings and off-tree molecular interactions rather than assuming it does.
+
+If the advantage disappears with strong off-tree couplings, the validation should identify whether the bottleneck is interaction nonlocality, message entropy growth, or failure of the selected tree topology.
+
 ## Validation Metrics
 
-The first diagnostic should be the maximum or average RTM message residual versus iteration or sweep round.
+Across all tasks, the primary metric is error in the target finite-time observable, such as local magnetization, correlation functions, Loschmidt amplitude, ZF NMR free-induction signal, or Fourier-transformed spectrum.
 
-The second diagnostic should be the error in the target finite-time observable, such as a local magnetization, correlation function, Loschmidt amplitude, or ZF NMR free-induction signal.
+The second metric is entanglement or message complexity: TTNS tree-edge entropy for state evolution, IF-BP temporal-message entropy for message contraction, and discarded weights for all compressed representations.
 
-The third diagnostic should be the computational effort needed to reach a fixed residual tolerance or observable tolerance.
+The third metric is computational cost: runtime, number of sweeps or message iterations, and bond dimension needed to reach a fixed observable tolerance.
 
-For the DIIS study, the main comparison should include sequential BP-TM without DIIS, sequential BP-TM with DIIS, damped BP-TM, and sweep-based RTM.
+For tree-topology validation, also measure the correlation between weighted tree-distance or weighted-cut cost and observed message complexity.
 
-For molecular-spin validation, the same diagnostics should be repeated on irregular coupling-weighted trees and compared with exact or MPS baselines when available.
-
-For tree-topology validation, the diagnostics should include the target observable error, the spectrum error after Fourier transform, the maximum tree-edge entropy or message discarded weight, and the correlation between weighted cut cost and observed message complexity.
-
-For short-time dynamical-correlation trees, the construction cost of the pilot calculation should be reported separately from the final BP simulation cost.
+For short-time dynamical-correlation trees, report the pilot construction cost separately from the final BP or TTNS simulation cost.
 
 ## Open Questions
 
@@ -102,10 +160,12 @@ Should DIIS be applied globally to all directed messages, locally to each messag
 
 What importance score should determine asynchronous message updates in an irregular molecular tree: RTM residual, coupling strength, graph distance from the observable, message discarded weight, or a combination of these?
 
-Does DIIS remain useful when the target observable is local and only a subset of tree messages is converged tightly?
-
 Does \(I_{ij}(0)\) contain useful information for high-temperature ZF NMR initial states, or should the initial-correlation tree use deviation-density correlations instead?
 
 How short can the pilot time window \(T_0\) be while still predicting the best tree for the longer target simulation time?
 
 How much improvement must the short-time dynamical-correlation tree provide to justify its additional pilot-simulation cost?
+
+For finite-tree benchmarks, when does IF-BP temporal-message entropy become smaller than TTNS state/tree-edge entropy, and when does it not?
+
+For full molecular Hamiltonians, how strong can off-tree couplings be before the chosen tree no longer provides a useful computational geometry?
